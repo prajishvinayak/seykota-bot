@@ -1,0 +1,47 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>Seykota Bot — Live</title>
+<meta http-equiv="refresh" content="300">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+:root{color-scheme:dark}
+body{font-family:-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#0f1115;color:#e6e8ec}
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+h1{font-size:20px;margin:0} .sub{color:#9aa0aa;font-size:13px;margin:4px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.card{background:#171a21;border:1px solid #232733;border-radius:10px;padding:12px 14px}
+.lbl{color:#9aa0aa;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.val{font-size:20px;font-weight:600;margin-top:4px} .pos{color:#4ade80} .neg{color:#f87171}
+.panel{background:#171a21;border:1px solid #232733;border-radius:10px;padding:16px;margin-bottom:20px}
+h2{font-size:14px;margin:0 0 12px;color:#cbd2dc}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #232733} th{color:#9aa0aa;font-weight:500}
+ul{margin:0;padding-left:18px;font-size:13px;color:#cbd2dc}
+.halt{background:#7f1d1d;color:#fff;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px} @media(max-width:820px){.two{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+<h1>Seykota Bot — Live [DEMO]</h1>
+<div class="sub">Updated 2026-06-14 18:44 UTC · auto-refreshes every 5 min · paper/demo</div>
+
+<div class="grid"><div class="card"><div class="lbl">Equity</div><div class="val ">21,000 GBPd</div></div><div class="card"><div class="lbl">Day P&L</div><div class="val pos">+0.00%</div></div><div class="card"><div class="lbl">Drawdown</div><div class="val ">0.00%</div></div><div class="card"><div class="lbl">Portfolio heat</div><div class="val ">0.00%</div></div><div class="card"><div class="lbl">Open positions</div><div class="val ">0</div></div><div class="card"><div class="lbl">Peak equity</div><div class="val ">21,000</div></div></div>
+<div class="panel"><h2>Equity</h2><canvas id="eq" height="80"></canvas></div>
+<div class="two">
+  <div class="panel"><h2>Open positions</h2><table>
+    <tr><th>Epic</th><th>Side</th><th>Size</th><th>Entry</th><th>Stop</th><th>uP&amp;L</th></tr>
+    <tr><td colspan="6">Flat — no open positions.</td></tr></table></div>
+  <div class="panel"><h2>Cluster exposure</h2><table>
+    <tr><th>Cluster</th><th>Positions</th><th>Heat</th></tr><tr><td>ag</td><td>0 / 3</td><td>0.00%</td></tr><tr><td>energy</td><td>0 / 3</td><td>0.00%</td></tr><tr><td>equity</td><td>0 / 3</td><td>0.00%</td></tr><tr><td>equity_asia</td><td>0 / 3</td><td>0.00%</td></tr><tr><td>metal</td><td>0 / 3</td><td>0.00%</td></tr></table></div>
+</div>
+<div class="panel"><h2>This cycle's actions</h2><ul><li>(no actions this cycle)</li></ul></div>
+<div class="panel"><h2>Recent orders</h2><table>
+  <tr><th>Time</th><th>Event</th><th>Epic</th><th>Side</th><th>Size</th><th>Stop</th></tr><tr><td colspan="6">No orders yet.</td></tr></table></div>
+</div>
+<script>
+const d={"labels": ["2026-06-14"], "equity": [21000.0], "dd": [0.0]};
+if(d.labels.length){new Chart(document.getElementById('eq'),{type:'line',
+ data:{labels:d.labels,datasets:[{label:'Equity',data:d.equity,borderColor:'#4ade80',
+ backgroundColor:'rgba(74,222,128,.08)',fill:true,pointRadius:0,borderWidth:1.5}]},
+ options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#9aa0aa',maxTicksLimit:10},grid:{color:'#1c2029'}},
+ y:{ticks:{color:'#9aa0aa'},grid:{color:'#1c2029'}}}}});}
+else{document.getElementById('eq').replaceWith(Object.assign(document.createElement('div'),
+ {className:'sub',textContent:'Equity chart appears after the first daily cycle.'}));}
+</script></body></html>

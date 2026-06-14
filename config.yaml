@@ -1,0 +1,80 @@
+# ===========================================================================
+# Seykota Bot — paper/live configuration. Edit values here, NOT code.
+# Defaults are the BACKTEST-VALIDATED settings (see REFINEMENT_LOG.md).
+# Secrets live in .env, never here.
+# ===========================================================================
+
+mode:
+  environment: demo            # demo | live   — KEEP demo until forward-tested for weeks
+  account_name: "Ed Seykota"   # THIS bot trades ONLY this Capital.com account (£21k).
+                               # The other bot uses the £11k account. The bot switches to
+                               # this account every cycle so the two can never collide.
+  cadence: daily               # one trading cycle per day (strategy uses daily bars)
+  run_time_utc: "15:00"        # for --loop: 15:00 UTC = US+Europe+commodities all open,
+                               # so the most instruments are TRADEABLE when the bot acts
+                               # (it trades on the last fully-CLOSED daily bar — no look-ahead)
+
+strategy:                      # mirror of engine.Config — validated defaults
+  ema_fast: 100
+  ema_slow: 200
+  donchian_n: 50
+  atr_period: 20
+  chandelier_period: 22
+  chandelier_mult: 3.5
+  initial_stop_atr_mult: 2.0
+  use_structure_stop: true
+  swing_lookback: 10
+  allow_short: false           # long-only — shorts lost in every backtest universe
+
+risk:
+  starting_equity: 0           # 0 = use the broker's REAL account equity
+  risk_pct: 0.005              # 0.5% per trade — CONSERVATIVE for the first live-demo weeks
+                               # (backtest used 1%; raise to 0.01 only after sizing is verified)
+  risk_pct_max: 0.01
+  heat_cap: 0.15               # max total open risk / equity
+  group_heat_cap: 0.06         # max open risk within one correlated cluster
+  max_positions_per_group: 3   # max concurrent positions per correlated cluster
+  drawdown_derisk: true
+  max_drawdown_pause: 0.25     # pause new entries past 25% drawdown
+  daily_loss_limit_pct: 0.06   # stop opening new trades if down >6% on the day
+
+execution:
+  max_size_per_trade: 50       # hard cap on CFD size per order (safety clamp)
+  respect_market_status: true  # only trade instruments the broker marks TRADEABLE
+  kill_switch_file: KILL_SWITCH  # create this file to flatten all + halt
+
+paths:
+  state_file: state/paper_state.json
+  journal_file: state/journal.jsonl
+  output_dir: output
+  data_cache: cache_capital
+
+# Universe = backtest-validated no-FX basket, as Capital.com epics + correlation cluster.
+# (index + stock share the "equity" cluster because they move together.)
+universe:
+  - {epic: US500,     group: index,  corr: equity}
+  - {epic: US100,     group: index,  corr: equity}
+  - {epic: US30,      group: index,  corr: equity}
+  - {epic: DE40,      group: index,  corr: equity}
+  - {epic: UK100,     group: index,  corr: equity}
+  - {epic: FR40,      group: index,  corr: equity}
+  - {epic: EU50,      group: index,  corr: equity}
+  - {epic: J225,      group: index,  corr: equity}       # Japan (Asian session)
+  - {epic: SG25,      group: index,  corr: equity}       # Singapore (Asian session)
+  - {epic: CN50,      group: index,  corr: equity_asia}  # China A50 (corr 0.28 — true diversifier)
+  # dropped AU200 (Australia) & HK50 (Hong Kong): lost in BOTH backtest halves (universe_optimize.py)
+  - {epic: GOLD,      group: metal,  corr: metal}
+  - {epic: SILVER,    group: metal,  corr: metal}
+  - {epic: COPPER,    group: metal,  corr: metal}
+  - {epic: PLATINUM,  group: metal,  corr: metal}
+  - {epic: PALLADIUM, group: metal,  corr: metal}
+  - {epic: NATURALGAS, group: energy, corr: energy}
+  # dropped OIL_CRUDE & OIL_BRENT: lost in BOTH backtest halves (consistent losers)
+  - {epic: WHEAT,     group: ag,     corr: ag}
+  - {epic: COFFEEARABICA, group: ag, corr: ag}
+  # dropped CORN & SOYBEAN: lost in BOTH backtest halves
+  - {epic: UKSUGAR,   group: ag,     corr: ag}
+  - {epic: USCOCOA,   group: ag,     corr: ag}
+  - {epic: USCOTTON,  group: ag,     corr: ag}
+  # single stocks excluded from the live universe for now: the Capital DEMO stock
+  # feed is noisy and single-stock CFDs were the weakest class. Re-add after review.

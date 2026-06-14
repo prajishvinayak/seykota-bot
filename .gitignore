@@ -1,0 +1,15 @@
+# Secrets — NEVER commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Data cache & generated artifacts
+cache/
+cache_capital/
+state/
+KILL_SWITCH
+output/*.json
